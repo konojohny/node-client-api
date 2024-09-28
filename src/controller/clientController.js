@@ -2,29 +2,23 @@ import clientServices from "../services/services.js";
 
 class clientController{
     static async listClients(req, res){
-        try{
-            const id = req.params.id;
-
-            const listClient = clientServices.list();
-            
-            console.log(`listClient ${listClient}`);
+            const listClient = await clientServices.list();
 
             res.status(200).json(listClient);
-        }catch{
-            res.status(500).json({ message: `${erro.message} - falha ao listar clientes`});
-        }
     }
 
     static async createClient(req, res){
-        try{
-            const {name, cpf, dateBirth} = req.body;
+            const {id, name, cpf, dateBirth} = req.body;
 
-            const createClient  = clientServices.create(name, cpf, dateBirth)
+            const duplicate = await clientServices.verify(cpf);
+    
+            if (duplicate) {
+                return res.status(400).send({message: "CPF Existente: ", cpf: cpf});
+            }
+
+            const createClient  = await clientServices.create(id, name, cpf, dateBirth)
 
             res.status(201).send({message: "Cliente Criado", client: createClient});
-        }catch{
-            res.status(500).json({ message: `${erro.message} - falha ao criar cliente`});
-        }
     }
 }
 
