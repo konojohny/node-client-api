@@ -4,12 +4,25 @@ const prisma = new PrismaClient();
 
 export class Clients{
     async search() {
-        const result = await prisma.clients.findMany({
-        });
+        const result = await prisma.clients.findMany();
     
         const res = result.map(({ id, cpf, ...rest }) => rest);
     
         return res; 
+    }
+
+    async searchId(id) {
+        const result = await prisma.clients.findUnique({
+            where: {
+                id: Number(id)
+            }
+        });
+    
+        console.log(result);
+
+        const {id: _, cpf: __, ...rest } = result;
+    
+        return rest; 
     }
 
     async create(id, name, cpf, dateBirth) {
@@ -29,7 +42,7 @@ export class Clients{
 
     async update(id, name, cpf, dateBirth){
         try{
-            const result = await prisma.clientes.update({
+            const result = await prisma.clients.update({
                 where: {
                     id: id
                 },
@@ -48,10 +61,23 @@ export class Clients{
         }
     }
 
-    async verifyCPF(cpf) {
+    async deleteClient(id){
+        const result = await prisma.clients.delete({
+            where:{
+                id: Number(id)
+            }
+        })
+
+        return result;
+    }
+
+    async verifyCPF(cpf, id) {
         const result = await prisma.clients.findFirst({
             where: {
-                cpf: cpf
+                cpf: cpf,
+                NOT: {
+                    id: id
+                }
             }
         });
 

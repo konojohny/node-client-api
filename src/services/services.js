@@ -7,6 +7,10 @@ class clientServices {
         return await client.search();
     }
 
+    static async listId(id) {
+        return await client.searchId(id);
+    }
+
     static async create(id, name, cpf, dateBirth) {
 
         return await client.create(id, name, cpf, dateBirth);
@@ -16,8 +20,12 @@ class clientServices {
         return await client.update(id, name, cpf, dateBirth); 
     }
 
-    static async verify(cpf){
-        return await client.verifyCPF(cpf); 
+    static async deleteClientId(id){
+        return await client.deleteClient(id);
+    }
+
+    static async verify(cpf, id){
+        return await client.verifyCPF(cpf, id); 
     }
 }
 
