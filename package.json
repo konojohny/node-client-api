@@ -7,7 +7,7 @@
   "author": "Joao Lima <konojohny@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node src/config/server.js"
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",

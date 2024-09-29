@@ -6,9 +6,7 @@ export class Clients{
     async search() {
         const result = await prisma.clients.findMany();
     
-        const res = result.map(({ id, cpf, ...rest }) => rest);
-    
-        return res; 
+        return result; 
     }
 
     async searchId(id) {
@@ -18,11 +16,7 @@ export class Clients{
             }
         });
     
-        console.log(result);
-
-        const {id: _, cpf: __, ...rest } = result;
-    
-        return rest; 
+        return result; 
     }
 
     async create(id, name, cpf, dateBirth) {
@@ -35,9 +29,7 @@ export class Clients{
             }
         });
 
-        const {id: _, cpf: __, ...rest } = result; 
-    
-        return rest; 
+        return result; 
     }
 
     async update(id, name, cpf, dateBirth){
@@ -53,9 +45,7 @@ export class Clients{
                 }
             })
     
-            const res = result.map(({id, cpf, ...rest}) => rest);
-    
-            return res;
+            return result;
         }catch{
             console.log(`O ID ${id} não existe.`);
         }

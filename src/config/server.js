@@ -1,9 +1,10 @@
-import { app } from "./app.js";
-import { connectDB } from "./src/config/dbConnect.js";
+import { app } from "../../app.js";
+import { PrismaClient } from "@prisma/client";
 
+const prisma = new PrismaClient();
 const PORT = 3000;
 
-connectDB().then(() => {
+prisma.$connect().then(() => {
     app.listen(PORT, () => {
         console.log(`Servidor Escutando Porta: ${PORT}`);
     })
