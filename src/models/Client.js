@@ -19,10 +19,9 @@ export class Clients{
         return result; 
     }
 
-    async create(id, name, cpf, dateBirth) {
+    async create(name, cpf, dateBirth) {
         const result = await prisma.clients.create({
             data: {
-                id: id,
                 name: name,
                 cpf: cpf,
                 dateBirth: dateBirth
@@ -33,25 +32,22 @@ export class Clients{
     }
 
     async update(id, name, cpf, dateBirth){
-        try{
             const result = await prisma.clients.update({
                 where: {
-                    id: id
+                    id: Number(id)
                 },
                 data: {
-                    nome: name,
+                    name: name,
                     cpf: cpf,
-                    dataNasci: dateBirth
+                    dateBirth: dateBirth
                 }
             })
     
             return result;
-        }catch{
-            console.log(`O ID ${id} não existe.`);
-        }
     }
 
     async deleteClient(id){
+
         const result = await prisma.clients.delete({
             where:{
                 id: Number(id)
@@ -61,18 +57,30 @@ export class Clients{
         return result;
     }
 
-    async verifyCPF(cpf, id) {
-        const result = await prisma.clients.findFirst({
-            where: {
-                cpf: cpf,
-                NOT: {
-                    id: id
-                }
-            }
-        });
-
-        return result; 
-    }    
+    async verifyIdCpf(cpf, id) {
+        if (id && cpf) {
+            return await prisma.clients.findFirst({
+                where: {
+                    cpf: cpf,
+                    NOT: {
+                        id: Number(id),
+                    },
+                },
+            });
+        } else if (cpf) {
+            return await prisma.clients.findFirst({
+                where: {
+                    cpf: cpf,
+                },
+            });
+        } else if(id){
+            return await prisma.clients.findFirst({
+                where: {
+                    id: Number(id),
+                },
+            });
+        }
+    } 
 }
 
 export default Clients;

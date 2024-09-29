@@ -16,51 +16,69 @@ class clientServices {
          return new ClientDto(listId);
     }
 
-    static async create(id, name, cpf, dateBirth) {
-        const duplicate = await this.verifyCPF(cpf, id);
-    
-        if (duplicate) {
-            throw new Error(`O CPF ${cpf} já existe.`);
-        }
+    static async create(name, cpf, dateBirth) {
+        await this.verifyIdCpf(cpf);
 
-        const createdClient = await client.create(id, name, cpf, dateBirth);
+        await this.verifyTypes(name, cpf, dateBirth);
+
+        const createdClient = await client.create(name, cpf, dateBirth);
 
         return new ClientDto(createdClient);
     }
 
     static async update(id, name, cpf, dateBirth) {
-        const listClient = await this.listId(id);
-        const duplicate = await this.verifyCPF(cpf, id);
+        await this.verifyIdCpf(cpf, id);
 
-        if(!listClient){
-            console.log("Entrrou")
-            throw new Error(`o ID ${id} não existe.`)
-        }
-
-        if (duplicate) {
-            throw new Error(`o CPF ${cpf} ja existe.`)
-        }
+        await this.verifyTypes(name, cpf, dateBirth);
 
         const updateClient = await client.update(id, name, cpf, dateBirth); 
+
+        console.log(`updateCLient = ${updateClient}`);
 
         return new ClientDto(updateClient);
     }
 
     static async deleteClientId(id){
-        const listClient = await this.listId(id);
-
-        if(!listClient){
-            throw new Error(`o ID ${id} não existe.`)
-        }
+        await this.verifyIdCpf(id);
 
         const deleteClient = await client.deleteClient(id);
 
         return new ClientDto(deleteClient);
     }
 
-    static async verifyCPF(cpf, id){
-        return await client.verifyCPF(cpf, id); 
+    static async verifyIdCpf(cpf, id){
+        const duplicate = await client.verifyIdCpf(cpf, id); 
+
+        if(cpf){
+            if(duplicate){
+                throw new Error(`o CPF ${cpf} ja existe.`);
+            }
+        }else if(cpf, id){
+            if(duplicate){
+                throw new Error(`o CPF ${cpf} ja existe.`);
+            }
+        }else if(id){
+            throw new Error(`o ID não existe.`);
+        }
     }
+
+    static async verifyTypes(name, cpf, dateBirth) {
+        if (!name || typeof name !== "string" || !isNaN(name)) {
+            throw new Error(`O nome deve ser um valor válido.`);
+        }
+
+        cpf = cpf.replace(/[.-]/g, '');
+
+        if (cpf.length !== 11 || isNaN(cpf)) {
+            throw new Error(`O CPF deve ser válido.`);
+        }
+
+        const date = new Date(dateBirth);
+
+        if (isNaN(date.getTime())) {
+            throw new Error(`A data ${dateBirth} deve ser válida.`);
+        }
+    }    
 }
 
 export default clientServices;

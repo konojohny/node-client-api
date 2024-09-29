@@ -23,9 +23,9 @@ class clientController{
 
     static async createClient(req, res){
         try{
-            const {id, name, cpf, dateBirth} = req.body;
+            const {name, cpf, dateBirth} = req.body;
 
-            const createdClient = await clientServices.create(id, name, cpf, dateBirth);
+            const createdClient = await clientServices.create(name, cpf, dateBirth);
 
             res.status(201).send({message: "Cliente Criado", client: createdClient});
         }catch(error){
